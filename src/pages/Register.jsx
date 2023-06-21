@@ -26,29 +26,35 @@ const Register = () => {
     console.log("oiii")
     const uploadTask = uploadBytesResumable(storageRef, file)
     console.log("oiii2222")
-
+    setTimeout(function() {
+      console.log("Passaram 1 segundo!");
+    }, 2000);
     uploadTask.on(
       (error) => {
         setErr(true)
       }, 
       () => {
         
-        console.log("oiii33")
+        
        
-        getDownloadURL(uploadTask.snapshot.ref).then( async(DownloadURL) => { setTimeout(function() {
-          console.log("Passaram 1 segundo!");
-        }, 2000);
+        getDownloadURL(uploadTask.snapshot.ref).then( async(getDownloadURL) => {
           await updateProfile(res.user,{
             displayName,
-            photoURL:DownloadURL,
+            photoURL:getDownloadURL,
           });
-          console.log("oiii44")
+          setTimeout(function() {
+            console.log("Passaram 1 segundo!");
+          }, 2000);
+          
           await setDoc(doc(db,"users", res.user.uid),{
             uid: res.user.uid,
             displayName,
             email,
-            photoURL: DownloadURL
+            photoURL: getDownloadURL
           })
+          setTimeout(function() {
+            console.log("Passaram 1 segundo!");
+          }, 2000);
 
           await setDoc(doc(db, "userChats", res.user.uid),{})
           navigate("/");
@@ -77,7 +83,7 @@ const Register = () => {
                     <input style= {{display:"none"}} type="file" id="file" />
                     <label htmlFor="file">
                         <img src={Add} alt="" />
-                        <span>Add an Avatart </span>
+                        <span>Add Foto </span>
                     </label>
                     <button>Sign up</button>
                     {err && <span>Tem algo errado</span>}
