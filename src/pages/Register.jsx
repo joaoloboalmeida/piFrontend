@@ -32,8 +32,12 @@ const Register = () => {
         setErr(true)
       }, 
       () => {
+        
         console.log("oiii33")
-        getDownloadURL(uploadTask.snapshot.ref).then( async(DownloadURL) => {
+       
+        getDownloadURL(uploadTask.snapshot.ref).then( async(DownloadURL) => { setTimeout(function() {
+          console.log("Passaram 1 segundo!");
+        }, 2000);
           await updateProfile(res.user,{
             displayName,
             photoURL:DownloadURL,
