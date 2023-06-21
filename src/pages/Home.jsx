@@ -1,8 +1,7 @@
 import React from "react";
 import Sidebar from "../components/Sidebar";
 import Chat from "../components/Chat";
-import Search from "../components/Search";
-import Navbar from "../components/Navbar";
+
 
 const Home = () => {
     return (
