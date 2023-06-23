@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import Img from "../img/img.png";
+
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
 import {
@@ -76,11 +77,12 @@ const Input = () => {
     <div className="input">
       <input
         type="text"
-        placeholder="Type something..."
+        placeholder="Escreve algo.."
         onChange={(e) => setText(e.target.value)}
         value={text}
       />
       <div className="send">
+        
         <input
           type="file"
           style={{ display: "none" }}

@@ -12,15 +12,10 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { AuthContext } from "../context/AuthContext";
-import { ChatContext } from "../context/ChatContext";
-
-
 const Search = () => {
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
   const [err, setErr] = useState(false);
-
-  const { dispatch } = useContext(ChatContext);
 
   const { currentUser } = useContext(AuthContext);
 
@@ -44,10 +39,8 @@ const Search = () => {
     e.code === "Enter" && handleSearch();
   };
 
-  const handleSelect = async (u) => {
-    
-      
-    
+  const handleSelect = async () => {
+    //check whether the group(chats in firestore) exists, if not create
     const combinedId =
       currentUser.uid > user.uid
         ? currentUser.uid + user.uid
@@ -56,10 +49,10 @@ const Search = () => {
       const res = await getDoc(doc(db, "chats", combinedId));
 
       if (!res.exists()) {
-        
+        //create a chat in chats collection
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
 
-        
+        //create user chats
         await updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedId + ".userInfo"]: {
             uid: user.uid,
@@ -78,7 +71,6 @@ const Search = () => {
           [combinedId + ".date"]: serverTimestamp(),
         });
       }
-      dispatch({ type: "CHANGE_USER", payload: u });
     } catch (err) {}
 
     setUser(null);
@@ -89,13 +81,13 @@ const Search = () => {
       <div className="searchForm">
         <input
           type="text"
-          placeholder="Find a user"
+          placeholder="Pequisar"
           onKeyDown={handleKey}
           onChange={(e) => setUsername(e.target.value)}
           value={username}
         />
       </div>
-      {err && <span>Usuario não encontrado</span>}
+      {err && <span>Pessoa não encontrada</span>}
       {user && (
         <div className="userChat" onClick={handleSelect}>
           <img src={user.photoURL} alt="" />

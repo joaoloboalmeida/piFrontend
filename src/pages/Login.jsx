@@ -19,21 +19,21 @@ const Login = () => {
       setErr(true);
     }
   };
-    return (
-        <div className="formContainer">
+  return (
+    <div className="formContainer">
             <div className="formWrapper">
-                <span className="logo">Ichat </span>
-                <span className="title">Register</span>
+                <span className="logo">IChat </span>
+                <span className="title">Login</span>
                 <form onSubmit={handleSubmit}>
                     <input type="email" placeholder="email"/>
                     <input type="password" placeholder="password"/>
-                    <button>Sign up</button>
+                    <button>Entrar</button>
                     {err && <span>Algo ta errado</span>}
                 </form>
                 <p>Não possui uma conta? <Link to="/register">Registrar</Link></p>
             </div>
         </div>
-    )
-}
+  );
+};
 
 export default Login;
