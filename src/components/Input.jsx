@@ -73,16 +73,24 @@ const Input = () => {
     setText("");
     setImg(null);
   };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <div className="input">
       <input
         type="text"
         placeholder="Escreve algo.."
         onChange={(e) => setText(e.target.value)}
+        onKeyPress={handleKeyPress}
         value={text}
       />
       <div className="send">
-        
         <input
           type="file"
           style={{ display: "none" }}
@@ -92,7 +100,7 @@ const Input = () => {
         <label htmlFor="file">
           <img src={Img} alt="" />
         </label>
-        <button onClick={handleSend}>Send</button>
+        <button onClick={handleSend}>Enviar</button>
       </div>
     </div>
   );
