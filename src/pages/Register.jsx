@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Add from "../img/addAvatar.png";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, fetchSignInMethodsForEmail } from "firebase/auth";
 import { auth, db, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
@@ -20,22 +20,28 @@ const Register = () => {
     const file = e.target[3].files[0];
 
     try {
-      
+      // Verifica se o email já existe na base de dados
+      const emailExists = await checkEmailExists(email);
+      console.log(emailExists)
+      if (emailExists) {
+        setErr("O email já está em uso.");
+        setLoading(false);
+        return;
+      }
+
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
-      
       const date = new Date().getTime();
       const storageRef = ref(storage, `${displayName + date}`);
 
       await uploadBytesResumable(storageRef, file).then(() => {
         getDownloadURL(storageRef).then(async (downloadURL) => {
           try {
-            
             await updateProfile(res.user, {
               displayName,
               photoURL: downloadURL,
             });
-            
+
             await setDoc(doc(db, "users", res.user.uid), {
               uid: res.user.uid,
               displayName,
@@ -43,22 +49,33 @@ const Register = () => {
               photoURL: downloadURL,
             });
 
-            
             await setDoc(doc(db, "userChats", res.user.uid), {});
             navigate("/");
           } catch (err) {
             console.log(err);
-            setErr(true);
+            setErr("Erro ao criar usuário.");
             setLoading(false);
           }
         });
       });
     } catch (err) {
-      setErr(true);
+      setErr("Erro ao criar usuário.");
       setLoading(false);
     }
   };
 
+  const checkEmailExists = async (email) => {
+    
+      try {
+        
+        const methods = await fetchSignInMethodsForEmail(auth, email);
+        console.log()
+        return methods.length > 0; // Retorna verdadeiro se o email existir
+      } catch (error) {
+        console.error("Erro ao verificar o email:", error);
+        return false;
+      }
+  };
   return (
     <div className="formContainer">
       <div className="formWrapper">
@@ -75,7 +92,7 @@ const Register = () => {
           </label>
           <button disabled={loading}>Entrar</button>
           {loading && "Subindo imagem aguarde..."}
-          {err && <span>Tem algo erradoo</span>}
+          {err && <span>{err}</span>}
         </form>
         <p>
           Já Possui uma Conta? <Link to="/Login">Login</Link>
