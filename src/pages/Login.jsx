@@ -14,7 +14,8 @@ const Login = () => {
 
    
     if (!email || !password) {
-      setErr(true);
+      
+      setErr("Por favor, preencha todos os campos.");
       return;
     }
 
@@ -22,7 +23,7 @@ const Login = () => {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/");
     } catch (err) {
-      setErr(true);
+      setErr("Senha ou email errados");
     }
   };
 
@@ -35,7 +36,7 @@ const Login = () => {
           <input type="email" placeholder="email" />
           <input type="password" placeholder="password" />
           <button>Entrar</button>
-          {err && <span>Por favor, preencha todos os campos.</span>}
+          {err && <span>{err}</span>}
         </form>
         <p>
           Não possui uma conta? <Link to="/register">Registrar</Link>
