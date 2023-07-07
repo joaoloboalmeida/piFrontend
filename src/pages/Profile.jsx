@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { updateEmail, updateProfile } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, storage } from "../firebase";
 
 const Profile = () => {
   const [displayName, setDisplayName] = useState("");
@@ -16,6 +16,7 @@ const Profile = () => {
       setErr("Por favor, preencha todos os campos.");
       return;
     }
+    
 
     try {
       const user = auth.currentUser;
@@ -28,6 +29,11 @@ const Profile = () => {
     } catch (err) {
       setErr("Erro ao atualizar o perfil. Por favor, tente novamente.");
     }
+    const user = auth.currentUser;
+    const storageRef = storage.ref(`users/${user.uid}`);
+    console.log()
+    await storageRef.updateMetadata({ customMetadata: { displayName: displayName } });
+    
   };
 
   return (
@@ -49,6 +55,9 @@ const Profile = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           <button>Atualizar</button>
+          <p>
+          Você não quer mudar?<Link to="/">Voltar</Link>
+        </p>
           {err && <span>{err}</span>}
         </form>
       </div>
