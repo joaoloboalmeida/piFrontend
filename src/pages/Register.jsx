@@ -19,10 +19,21 @@ const Register = () => {
     const password = e.target[2].value;
     const file = e.target[3].files[0];
 
+    if (password.length < 8) {
+      setErr("A senha deve ter pelo menos 8 caracteres.");
+      setLoading(false);
+      return;
+    }
+
+    if (!file) {
+      setErr("Por favor, selecione uma foto.");
+      setLoading(false);
+      return;
+    }
+
     try {
-      // Verifica se o email já existe na base de dados
+      
       const emailExists = await checkEmailExists(email);
-      console.log(emailExists)
       if (emailExists) {
         setErr("O email já está em uso.");
         setLoading(false);
@@ -65,17 +76,15 @@ const Register = () => {
   };
 
   const checkEmailExists = async (email) => {
-    
-      try {
-        
-        const methods = await fetchSignInMethodsForEmail(auth, email);
-        console.log()
-        return methods.length > 0; // Retorna verdadeiro se o email existir
-      } catch (error) {
-        console.error("Erro ao verificar o email:", error);
-        return false;
-      }
+    try {
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      return methods.length > 0;
+    } catch (error) {
+      console.error("Erro ao verificar o email:", error);
+      return false;
+    }
   };
+
   return (
     <div className="formContainer">
       <div className="formWrapper">
@@ -85,7 +94,7 @@ const Register = () => {
           <input required type="text" placeholder="display name" />
           <input required type="email" placeholder="email" />
           <input required type="password" placeholder="password" />
-          <input required style={{ display: "none" }} type="file" id="file" />
+          <input  style={{ display: "none" }} type="file" id="file" />
           <label htmlFor="file">
             <img src={Add} alt="" />
             <span>Add Foto </span>
